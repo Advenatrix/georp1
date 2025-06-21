@@ -1,8 +1,11 @@
 [build]
-publish = "dist/georp-ui"
-functions = "netlify/functions"
+  # step into georp-ui, install & build the Angular app
+  command   = "cd georp-ui && npm install && npm run build"
+  # now publish the files that landed in georp-ui/dist/georp-ui
+  publish   = "georp-ui/dist/georp-ui"
+  functions = "netlify/functions"  # this is relative to the repo root
 
 [[redirects]]
-from = "/api/countryReport"
-to = "/.netlify/functions/countryReport"
-status = 200
+  from   = "/api/countryReport"
+  to     = "/.netlify/functions/countryReport"
+  status = 200
