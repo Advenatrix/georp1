@@ -3,6 +3,9 @@
   publish   = "georp-ui/dist/georp-ui"
   functions = "netlify/functions"  # this is relative to the repo root
 
+[functions]
+  node_version = "18"
+
 [[redirects]]
   node_version = "18"
   from   = "/api/countryReport"
