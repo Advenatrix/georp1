@@ -2,6 +2,8 @@
 const fetch = require("node-fetch");
 const { Client } = require("pg");
 
+await client.query('SET search_path TO development, public;');
+
 exports.handler = async function (event) {
     try {
         // 1) Parse country_id
