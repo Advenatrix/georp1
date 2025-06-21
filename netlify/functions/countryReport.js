@@ -1,101 +1,80 @@
 // netlify/functions/countryReport.js
-const { Blob } = require('buffer');
-globalThis.Blob = Blob;
-globalThis.File = Blob; // if any code expects a File class
+const fetch = require("node-fetch");
+const mysql = require("mysql2/promise"); // or mysql2, adjust if you used mysql
 
-import { Client } from 'pg';
-import fetch from 'node-fetch';
+exports.handler = async function (event) {
+  try {
+    // 1) Parse country_id from query
+    const params = event.queryStringParameters || {};
+    const countryId = parseInt(params.country_id, 10);
+    if (!countryId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Usage: ?country_id=<id>" }),
+      };
+    }
 
-export const handler = async (event) => {
-  const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-  };
-  // 1) Handle CORS preflight:
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers };
-  }
+    // 2) Connect to MySQL (use your ENV variables or hard-code for InfinityFree)
+    const db = await mysql.createConnection({
+      host: "sql211.infinityfree.com",
+      user: "if0_38934414",
+      password: "GhvgBcX9l5Fdb",
+      database: "if0_38934414_geolarp",
+    });
 
-  // 2) Parse country_id:
-  const params = event.httpMethod === 'GET'
-    ? event.queryStringParameters
-    : JSON.parse(event.body || '{}');
-  const countryId = parseInt(params.country_id, 10);
-  if (!countryId) {
+    // 3) Fetch country name + webhook
+    const [countryRows] = await db.execute(
+      "SELECT name, webhook FROM country WHERE id = ?",
+      [countryId]
+    );
+    if (countryRows.length === 0) {
+      return { statusCode: 404, body: JSON.stringify({ error: "Country not found" }) };
+    }
+    const { name: countryName, webhook: webhookUrl } = countryRows[0];
+
+    // 4) Fetch companies
+    const [companies] = await db.execute(
+      "SELECT name, income FROM company WHERE country_id = ? ORDER BY name",
+      [countryId]
+    );
+    await db.end();
+
+    // 5) Build message
+    let content;
+    if (companies.length === 0) {
+      content = `**${countryName}** has no registered companies.`;
+    } else {
+      content = [
+        `**Companies in ${countryName}:**`,
+        ...companies.map(c => `- **${c.name}**: Income ${c.income}`)
+      ].join("\n");
+    }
+
+    // 6) Post to Discord
+    const resp = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      return {
+        statusCode: resp.status,
+        body: JSON.stringify({ error: "Discord webhook failed", detail: text })
+      };
+    }
+
+    // 7) Return success
     return {
-      statusCode: 400, headers,
-      body: JSON.stringify({ error: 'country_id is required' })
+      statusCode: 200,
+      body: JSON.stringify({ success: true, message: content }),
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message }),
     };
   }
-
-  // 3) Connect to Neon Postgres:
-  const client = new Client({ connectionString: process.env.NEON_DATABASE_URL });
-  try {
-    await client.connect();
-  } catch (err) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'DB connection failed', details: err.message }) };
-  }
-
-  // 4) Fetch the country’s name & webhook URL:
-  let countryName, webhookUrl;
-  try {
-    const res = await client.query(
-      'SELECT name, webhook FROM country WHERE id = $1',
-      [countryId]
-    );
-    if (res.rowCount === 0) {
-      await client.end();
-      return { statusCode: 404, headers, body: JSON.stringify({ error: 'Country not found' }) };
-    }
-    ({ name: countryName, webhook: webhookUrl } = res.rows[0]);
-  } catch (err) {
-    await client.end();
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Fetch country failed', details: err.message }) };
-  }
-
-  // 5) Fetch all companies for that country:
-  let companies;
-  try {
-    const res = await client.query(
-      'SELECT name, income FROM company WHERE country_id = $1 ORDER BY name',
-      [countryId]
-    );
-    companies = res.rows;
-  } catch (err) {
-    await client.end();
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Fetch companies failed', details: err.message }) };
-  } finally {
-    await client.end();
-  }
-
-  // 6) Build the Discord message
-  let content;
-  if (companies.length === 0) {
-    content = `**${countryName}** has no registered companies.`;
-  } else {
-    const lines = [`**Companies in ${countryName}:**`];
-    companies.forEach(c => lines.push(`- **${c.name}**: Income ${c.income}`));
-    content = lines.join('\n');
-  }
-
-  // 7) Send to Discord
-  try {
-    const resp = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content })
-    });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  } catch (err) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Webhook failed', details: err.message }) };
-  }
-
-  // 8) Return success
-  return {
-    statusCode: 200,
-    headers,
-    body: JSON.stringify({ success: true, message: content })
-  };
 };
