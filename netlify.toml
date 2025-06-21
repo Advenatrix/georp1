@@ -1,0 +1,8 @@
+[build]
+publish = "dist/georp-ui"
+functions = "netlify/functions"
+
+[[redirects]]
+from = "/api/countryReport"
+to = "/.netlify/functions/countryReport"
+status = 200
