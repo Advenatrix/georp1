@@ -1,4 +1,8 @@
 // netlify/functions/countryReport.js
+const { Blob } = require('buffer');
+globalThis.Blob = Blob;
+globalThis.File = Blob; // if any code expects a File class
+
 import { Client } from 'pg';
 import fetch from 'node-fetch';
 
