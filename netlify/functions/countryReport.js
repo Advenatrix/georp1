@@ -2,10 +2,12 @@
 const fetch = require("node-fetch");
 const { Client } = require("pg");
 
-await client.query('SET search_path TO development, public;');
-
 exports.handler = async function (event) {
+    
     try {
+
+        await client.query('SET search_path TO development, public;');
+
         // 1) Parse country_id
         const params = event.queryStringParameters || {};
         const countryId = parseInt(params.country_id, 10);
