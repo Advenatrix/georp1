@@ -1,6 +1,13 @@
 $app-max-width: 800px;
 $app-gutter: 1rem;
 
+html,body{
+  background-color: #000;
+  color: #fff;  
+  margin: 0;
+  padding: 0;
+}
+
 .app-container {
   max-width: $app-max-width;
   margin: 2rem auto;
@@ -39,4 +46,19 @@ $app-gutter: 1rem;
   border-radius: 8px;
   text-align: center;
   background: #fafafa;
+}
+
+.glarp-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #000000;  // pink accent, adjust to taste
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.glarp-btn:hover {
+  background-color: #ffffff;
 }
