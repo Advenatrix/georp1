@@ -119,31 +119,58 @@
     });
     map.addInteraction(drawInteraction);
 
-    // 7) On draw end: show a tooltip overlay
-    drawInteraction.on('drawend', evt => {
-      const geom   = evt.feature.getGeometry();
-      const length = ol.sphere.getLength(geom);
-      const coord  = geom.getLastCoordinate();
+// Keep a stack of drawn features + tip overlays
+  const history = [];
 
-      const tip = document.createElement('div');
-      tip.className   = 'tooltip';
-      tip.textContent = `Distance: ${((length/1000)/2.1).toFixed(2)} km`;
+  drawInteraction.on('drawend', evt => {
+    const geom   = evt.feature.getGeometry();
+    const length = ol.sphere.getLength(geom);
+    const coord  = geom.getLastCoordinate();
 
-      const tipOverlay = new ol.Overlay({
-        element: tip,
-        offset:  [0, -15],
-        positioning: 'bottom-center',
-        stopEvent: false
-      });
-      tipOverlay.setPosition(coord);
-      map.addOverlay(tipOverlay);
+    // Create tooltip
+    const tip = document.createElement('div');
+    tip.className   = 'tooltip';
+    tip.textContent = `Distance: ${((length/1000)/2.1).toFixed(2)} km`;
+
+    const tipOverlay = new ol.Overlay({
+      element: tip,
+      offset:  [0, -15],
+      positioning: 'bottom-center',
+      stopEvent: false
     });
+    tipOverlay.setPosition(coord);
+    map.addOverlay(tipOverlay);
 
-    // 8) Clear button logic
-    document.getElementById('clear-btn').addEventListener('click', () => {
-      drawSource.clear();
-      map.getOverlays().clear();
-    });
+    // Push both the feature and its tooltip onto history
+    history.push({ feature: evt.feature, overlay: tipOverlay });
+  });
+
+  // Clear All button logic (resets everything)
+  document.getElementById('clear-btn').addEventListener('click', () => {
+    // Remove all features
+    drawSource.clear();
+    // Remove all overlays except base controls (ScaleLine, etc.)
+    map.getOverlays().getArray()
+      .filter(ov => history.some(h => h.overlay === ov))
+      .forEach(ov => map.removeOverlay(ov));
+    // Reset history
+    history.length = 0;
+  });
+
+  // Double‐right‐click to undo last draw
+  let lastRightTs = 0;
+  map.getViewport().addEventListener('contextmenu', e => {
+    e.preventDefault();  // suppress browser menu
+
+    const now = Date.now();
+    if (now - lastRightTs < 300 && history.length) {
+      // Pop the last drawn feature + overlay
+      const { feature, overlay } = history.pop();
+      drawSource.removeFeature(feature);
+      map.removeOverlay(overlay);
+    }
+    lastRightTs = now;
+  });
   </script>
 </body>
 </html>
