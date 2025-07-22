@@ -54,7 +54,7 @@ exports.handler = async function (event) {
         } else {
             content = [
                 `**Companies in ${countryName}:**`,
-                ...compRes.rows.map(c => `- **${c.name}**: Income ${c.income}`)
+                ...compRes.rows.map(c => `- **${c.name}** Income: ${c.income}M`)
             ].join("\n");
         }
 
