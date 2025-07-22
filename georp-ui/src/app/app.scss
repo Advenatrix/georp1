@@ -1,19 +1,19 @@
-$app-max-width: 800px;
-$app-gutter: 1rem;
 
-html,body{
+
+html,
+body {
   background-color: #000;
-  color: #000000;  
+  color: #000000;
   margin: 0;
   padding: 0;
 }
 
 .app-container {
-  max-width: $app-max-width;
+  max-width: 800px;
   margin: 2rem auto;
   font-family: Inter, sans-serif;
   color: #ffffff;
-  padding: $app-gutter;
+  padding: 1rem;
 }
 
 .app-header {
@@ -44,22 +44,66 @@ html,body{
   padding: 2rem;
   border: 2px solid #787878;
   border-radius: 8px;
-  text-align: center;
   background: #000000;
+
+  display: flex;
+  flex-direction: column;      /* stack children vertically */
+  align-items: center;         /* horizontal centering */
+  justify-content: center;
 }
 
 .glarp-btn {
+  position: relative;
   display: inline-block;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #000000; 
+  padding: 8px 20px;
+  background: #000;
   color: #fff;
-  text-decoration: none;
-  border-radius: 4px;
   font-weight: 600;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;          /* center only the text */
 }
 
-.glarp-btn:hover {
-  background-color: #ffffff81;
-    color: #00000000;
+/* underline */
+.glarp-btn::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 3px;
+  width: 0;
+  background-color: #fff;
+  transition: width 0.4s ease;
 }
+
+/* text */
+.glarp-btn .text {
+  display: inline-block;
+  transition: transform 0.4s ease;
+  transform: translateX(0);
+}
+
+/* icon */
+.glarp-btn .icon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  /* start flush at right padding */
+  transform: translateY(-50%) translateX(0);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* hover states */
+.glarp-btn:hover::after {
+  width: 100%;
+}
+.glarp-btn:hover .text {
+  transform: translateX(-10px);
+}
+.glarp-btn:hover .icon {
+  opacity: 1;
+  /* slide 10px to the right */
+  transform: translateY(-50%) translateX(8px);
+}
+
+

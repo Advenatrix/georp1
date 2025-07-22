@@ -14,7 +14,27 @@
   <section class="placeholder">
     <p>Welcome to Cattius</p>
 
-    <a href="glarp/fictional_map_overlay_with_ruler.html" class="glarp-btn">Distance Calculator</a>
+    <a href="glarp/fictional_map_overlay_with_ruler.html" class="glarp-btn">
+      <span class="text">Distance Calculator</span>
+    <span class="icon">
+      <!-- Transparent SVG globe -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24" height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <path d="M12 2a15.3 15.3 0 0 1 0 20"></path>
+        <path d="M12 2a15.3 15.3 0 0 0 0 20"></path>
+      </svg>
+    </span>
+    </a>
   </section>
 
   <router-outlet></router-outlet>
