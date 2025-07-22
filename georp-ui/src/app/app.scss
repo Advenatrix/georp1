@@ -1,0 +1,42 @@
+$app-max-width: 800px;
+$app-gutter: 1rem;
+
+.app-container {
+  max-width: $app-max-width;
+  margin: 2rem auto;
+  font-family: Inter, sans-serif;
+  color: #333;
+  padding: $app-gutter;
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  nav a {
+    margin-left: 1rem;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+
+    &.active,
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.placeholder {
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  background: #fafafa;
+}
