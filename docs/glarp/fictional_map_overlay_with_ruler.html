@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Map Overlay with Ruler + Range Fix</title>
+
+  <!-- CSP (allow inline & eval for OL) -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          script-src  'self' 'unsafe-eval' 'unsafe-inline';
+          style-src   'self' 'unsafe-inline';
+          img-src     'self' data:;
+        "
+  >
+
+  <!-- OpenLayers CSS (self-hosted) -->
+  <link rel="stylesheet" href="ol.css" />
+
+  <style>
+    html, body, #map {
+      margin:0; padding:0; width:100%; height:100%;
+    }
+    /* controls */
+    #range-display, #clear-btn {
+      position: absolute;
+      left: 10px;
+      z-index: 1000;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #666;
+      border-radius: 4px;
+    }
+    #range-display { top: 10px; }
+    #clear-btn    { top: 60px; }
+
+    .tooltip {
+      position: absolute;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 4px;
+      font-size: 12px;
+      border-radius: 3px;
+      pointer-events: none;
+      white-space: nowrap;
+      transform: translate(-50%, -100%);
+    }
+  </style>
+</head>
+<body>
+  <!-- Range display -->
+  <div id="range-display">Overlay width: …</div>
+  <!-- Clear button -->
+  <button id="clear-btn">Clear All</button>
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- OpenLayers JS bundle (self-hosted) -->
+  <script src="ol.js"></script>
+  <script>
+    // 1) Base OSM layer and static overlay
+    const raster = new ol.layer.Tile({ source: new ol.source.OSM() });
+    const overlayImg = new ol.layer.Image({
+      source: new ol.source.ImageStatic({
+        url: 'images/Cattian_32.png',
+        imageExtent: ol.proj.transformExtent(
+          [-150, -60, 150, 60],
+          'EPSG:4326', 'EPSG:3857'
+        )
+      })
+    });
+
+    // 2) Compute true full-width along equator (–150°,0 → +150°,0)
+    const fullWidthKm = (
+      ol.sphere.getDistance(
+        [-150, 0],   // lon/lat west equator
+        [150,  0]    // lon/lat east equator
+      ) / 1000
+    ).toFixed(0);
+    document.getElementById('range-display')
+            .textContent = `Overlay width: ${fullWidthKm} km`;
+
+    // 3) Vector source & layer for drawn lines
+    const drawSource = new ol.source.Vector();
+    const drawLayer  = new ol.layer.Vector({
+      source: drawSource,
+      style: new ol.style.Style({
+        fill:   new ol.style.Fill({   color: 'rgba(255,255,255,0.2)' }),
+        stroke: new ol.style.Stroke({ color: '#ffcc33', width: 2 }),
+        image:  new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({ color: '#ffcc33' })
+        })
+      })
+    });
+
+    // 4) Initialize map
+    const map = new ol.Map({
+      target: 'map',
+      layers: [raster, overlayImg, drawLayer],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([0, 0]),
+        zoom: 2
+      })
+    });
+
+    // 5) Add scale-line (ruler) control
+    map.addControl(new ol.control.ScaleLine({
+      units: 'metric',
+      text:  true,
+      minWidth: 64
+    }));
+
+    // 6) Add drawing interaction
+    const drawInteraction = new ol.interaction.Draw({
+      source: drawSource,
+      type: 'LineString'
+    });
+    map.addInteraction(drawInteraction);
+
+    // 7) On draw end: show a tooltip overlay
+    drawInteraction.on('drawend', evt => {
+      const geom   = evt.feature.getGeometry();
+      const length = ol.sphere.getLength(geom);
+      const coord  = geom.getLastCoordinate();
+
+      const tip = document.createElement('div');
+      tip.className   = 'tooltip';
+      tip.textContent = `Distance: ${((length/1000)/2.1).toFixed(2)} km`;
+
+      const tipOverlay = new ol.Overlay({
+        element: tip,
+        offset:  [0, -15],
+        positioning: 'bottom-center',
+        stopEvent: false
+      });
+      tipOverlay.setPosition(coord);
+      map.addOverlay(tipOverlay);
+    });
+
+    // 8) Clear button logic
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      drawSource.clear();
+      map.getOverlays().clear();
+    });
+  </script>
+</body>
+</html>
