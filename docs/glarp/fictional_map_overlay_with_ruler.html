@@ -72,7 +72,7 @@
   <!-- OpenLayers JS bundle (self-hosted) -->
   <script src="ol.js"></script>
   <script>
-    import { primaryAction } from 'ol/events/condition';
+    const { primaryAction } = ol.events.condition;
 
     // 1) Base OSM layer and static overlay
     const raster = new ol.layer.Tile({ source: new ol.source.OSM() });
