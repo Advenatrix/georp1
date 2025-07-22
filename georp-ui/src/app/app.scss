@@ -42,7 +42,7 @@ html,body{
 
 .placeholder {
   padding: 2rem;
-  border: 2px #787878;
+  border: 2px solid #787878;
   border-radius: 8px;
   text-align: center;
   background: #000000;
@@ -60,5 +60,6 @@ html,body{
 }
 
 .glarp-btn:hover {
-  background-color: #ffffff;
+  background-color: #ffffff81;
+    color: #00000000;
 }
