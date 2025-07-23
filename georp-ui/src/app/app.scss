@@ -1,109 +1,155 @@
-
-
-html,
-body {
-  background-color: #000;
-  color: #000000;
+/* Reset & globals */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html, body {
   margin: 0;
   padding: 0;
-}
-
-.app-container {
-  max-width: 800px;
-  margin: 2rem auto;
   font-family: Inter, sans-serif;
-  color: #ffffff;
-  padding: 1rem;
+  background-color: black;
+  color: white;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
+/* App container */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header layout */
 .app-header {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-
-  h1 {
-    margin: 0;
-    font-size: 2rem;
-  }
-
-  nav a {
-    margin-left: 1rem;
-    text-decoration: none;
-    color: #007bff;
-    font-weight: 500;
-
-    &.active,
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  align-items: center;
+  justify-content: start;
+  padding: 16px 0;
+  background-color: black;
+  border-bottom: 1px solid #444;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.placeholder {
-  padding: 2rem;
-  border: 2px solid #787878;
-  border-radius: 8px;
-  background: #000000;
-
-  display: flex;
-  flex-direction: column;      /* stack children vertically */
-  align-items: center;         /* horizontal centering */
-  justify-content: center;
+/* Branding (logo/text) with divider */
+.app-header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  position: relative;
+  padding-right: 16px; /* space for the divider */
+  padding-left: 16px
+}
+.app-header h1::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 2px;         /* divider thickness */
+  height: 1.2em;      /* approx line-height of the h1 */
+  background-color: white;
 }
 
+/* (Nav styles left intact in case you add nav later) */
+.app-header nav {
+  flex: 1;
+  text-align: center;
+}
+.app-header nav a {
+  margin: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+.app-header nav a:hover,
+.app-header nav a.active {
+  color: #ccc;
+  border-bottom-color: #ccc;
+}
+
+/* Header action slot (your button) */
+.header-action {
+  margin-left: 0px;
+}
+
+/* Your Glarp button */
 .glarp-btn {
   position: relative;
-  display: inline-block;
-  padding: 8px 20px;
-  background: #000;
-  color: #fff;
+  display: flex;
+  padding: 10px 26px; /* extra right padding for the icon */
+  margin: 0px 10px;    
+  font-size: 13px;
   font-weight: 600;
-  border-radius: 8px;
-  overflow: hidden;
-  text-align: center;          /* center only the text */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  background-color: transparent;
+  border-radius: 24px;
+  overflow: visible;
+  transition: background-color 0.4s ease, color 0.2s ease;
 }
 
-/* underline */
+/* Underline animation */
 .glarp-btn::after {
   content: '';
   position: absolute;
-  left: 0; bottom: 0;
-  height: 3px;
-  width: 0;
-  background-color: #fff;
-  transition: width 0.4s ease;
+  left: 10px;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: currentColor;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
-/* text */
+.glarp-btn:hover::after {
+  /* 1.06 = 100% + 6% extra – tweak to match your icon shift */
+  transform: scaleX(1.00);
+}
+
+/* 1) Text-slide on hover */
 .glarp-btn .text {
   display: inline-block;
   transition: transform 0.4s ease;
   transform: translateX(0);
 }
+.glarp-btn:hover .text {
+  transform: translateX(-5px);
+}
 
-/* icon */
+/* 2) Icon-reveal on hover */
 .glarp-btn .icon {
   position: absolute;
   top: 50%;
-  right: 8px;
-  /* start flush at right padding */
-  transform: translateY(-50%) translateX(0);
+  right: 12px;            /* align inside the padding */
+  transform: translateY(-50%) translateX(0px);
   opacity: 0;
   transition: transform 0.4s ease, opacity 0.4s ease;
 }
-
-/* hover states */
-.glarp-btn:hover::after {
-  width: 100%;
-}
-.glarp-btn:hover .text {
-  transform: translateX(-10px);
-}
 .glarp-btn:hover .icon {
   opacity: 1;
-  /* slide 10px to the right */
-  transform: translateY(-50%) translateX(8px);
+  transform: translateY(-50%) translateX(10px);
 }
 
-
+/* Placeholder content */
+.placeholder {
+  margin-top: 48px;
+  padding: 48px;
+  text-align: center;
+  background-color: black;
+  border-radius: 8px;
+  color: white;           /* restore white text */
+}
