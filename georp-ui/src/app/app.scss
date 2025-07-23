@@ -7,7 +7,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: Inter, sans-serif;
+  font-family: 'Inter', sans-serif;   /* ← make sure this line stays */
   background-color: black;
   color: white;
 }
@@ -44,7 +44,7 @@ a {
   color: white;
   position: relative;
   padding-right: 16px; /* space for the divider */
-  padding-left: 16px
+  padding-left: 16px;
 }
 .app-header h1::after {
   content: '';
@@ -114,9 +114,7 @@ a {
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
-
 .glarp-btn:hover::after {
-  /* 1.06 = 100% + 6% extra – tweak to match your icon shift */
   transform: scaleX(1.00);
 }
 
