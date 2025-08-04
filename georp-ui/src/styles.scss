@@ -1,1 +1,156 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
+/* Reset & globals */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;   /* ← make sure this line stays */
+  background-color: black;
+  color: white;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* App container */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header layout */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 16px 0;
+  background-color: black;
+  border-bottom: 1px solid #444;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Branding (logo/text) with divider */
+.app-header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  position: relative;
+  padding-right: 16px; /* space for the divider */
+  padding-left: 16px;
+}
+.app-header h1::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 2px;         /* divider thickness */
+  height: 1.2em;      /* approx line-height of the h1 */
+  background-color: white;
+}
+
+/* (Nav styles left intact in case you add nav later) */
+.app-header nav {
+  flex: 1;
+  text-align: center;
+}
+.app-header nav a {
+  margin: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+.app-header nav a:hover,
+.app-header nav a.active {
+  color: #ccc;
+  border-bottom-color: #ccc;
+}
+
+/* Header action slot (your button) */
+.header-action {
+  margin-left: 0px;
+}
+
+/* Your Glarp button */
+.glarp-btn {
+  position: relative;
+  display: flex;
+  padding: 10px 26px; /* extra right padding for the icon */
+  margin: 0px 10px;    
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  background-color: transparent;
+  border-radius: 24px;
+  overflow: visible;
+  transition: background-color 0.4s ease, color 0.2s ease;
+}
+
+/* Underline animation */
+.glarp-btn::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: currentColor;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.glarp-btn:hover::after {
+  transform: scaleX(1.00);
+}
+
+/* 1) Text-slide on hover */
+.glarp-btn .text {
+  display: inline-block;
+  transition: transform 0.4s ease;
+  transform: translateX(0);
+}
+.glarp-btn:hover .text {
+  transform: translateX(-5px);
+}
+
+/* 2) Icon-reveal on hover */
+.glarp-btn .icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;            /* align inside the padding */
+  transform: translateY(-50%) translateX(0px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.glarp-btn:hover .icon {
+  opacity: 1;
+  transform: translateY(-50%) translateX(10px);
+}
+
+/* Placeholder content */
+.placeholder {
+  margin-top: 48px;
+  padding: 48px;
+  text-align: center;
+  background-color: black;
+  border-radius: 8px;
+  color: white;           /* restore white text */
+}
