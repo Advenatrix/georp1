@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
-import { EcoUi } from './eco-ui/eco-ui';
 
 export const routes: Routes = [
-      { path: 'eco-ui', component: EcoUi, title: 'Eco UI' },
+      {
+            path: 'eco-ui',
+            loadComponent: () =>
+                  import('./eco-ui/eco-ui').then(m => m.EcoUi),
+            title: 'Ecoview'
+      },
 ];
