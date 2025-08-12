@@ -19,6 +19,7 @@ export class AppComponent {
     { label: 'Home',  path: '/' },
     { label: 'Docs',  path: '/docs' },
     { label: 'About', path: '/about' },
+    { path: 'eco-ui', label: 'Eco UI' },
   ];
 
   trackByLabel(_: number, link: NavLink) {
