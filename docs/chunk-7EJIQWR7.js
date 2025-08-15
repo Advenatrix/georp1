@@ -1,0 +1,1 @@
+import{Ma as c,Na as n,Ta as l,ya as o}from"./chunk-33KHQNXQ.js";var s=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=o({type:t,selectors:[["app-welcome"]],decls:3,vars:0,consts:[[1,"placeholder"]],template:function(e,i){e&1&&(c(0,"section",0)(1,"p"),l(2,"Welcome to Cattius"),n()())},encapsulation:2})};export{s as Welcome};

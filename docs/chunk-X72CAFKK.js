@@ -1,1 +1,0 @@
-import{Ma as n,Na as c,Ta as m,ya as o}from"./chunk-33KHQNXQ.js";var l=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=o({type:t,selectors:[["app-welcome"]],decls:2,vars:0,template:function(e,i){e&1&&(n(0,"p"),m(1,"welcome works!"),c())},encapsulation:2})};export{l as Welcome};
