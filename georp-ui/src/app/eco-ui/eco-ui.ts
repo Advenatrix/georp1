@@ -18,7 +18,7 @@ export class EcoUi {
   }
 
   fetchData() {
-    this.http.get('/.netlify/functions/countryReport').subscribe((response: any) => {
+    this.http.get('/api/countryReport').subscribe((response: any) => {
       this.data = response;
     });
   }
