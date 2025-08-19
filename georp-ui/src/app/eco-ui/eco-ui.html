@@ -1,2 +1,28 @@
 <h2>Ecoview</h2>
 <p>Welcome to the Eco UI page.</p>
+
+<h2>Gamemaster Dashboard</h2>
+<div class="dashboard">
+  <div class="data-section">
+    <h3>Data from Netlify Functions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data">
+          <td>{{ item.resource }}</td>
+          <td>{{ item.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="webhook-section">
+    <h3>Automate Resource Processing</h3>
+    <button (click)="sendWebhook()">Send Webhook to Discord</button>
+  </div>
+</div>

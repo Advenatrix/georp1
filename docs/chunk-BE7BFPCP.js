@@ -1,1 +1,0 @@
-import{Ma as t,Na as i,Ta as o,ya as c}from"./chunk-33KHQNXQ.js";var a=class n{static \u0275fac=function(e){return new(e||n)};static \u0275cmp=c({type:n,selectors:[["app-eco-ui"]],decls:4,vars:0,template:function(e,s){e&1&&(t(0,"h2"),o(1,"Ecoview"),i(),t(2,"p"),o(3,"Welcome to the Eco UI page."),i())},encapsulation:2})};export{a as EcoUi};
