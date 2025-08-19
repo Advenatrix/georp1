@@ -24,7 +24,7 @@ export class EcoUi {
   }
 
   sendWebhook() {
-    this.http.post('/.netlify/functions/sendDiscordWebhook', {}).subscribe(() => {
+    this.http.post('/api/sendDiscordWebhook.js', {}).subscribe(() => {
       alert('Webhook sent successfully!');
     });
   }
